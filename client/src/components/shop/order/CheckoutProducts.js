@@ -197,7 +197,7 @@ const CheckoutProducts = ({ products }) => {
                     {quantity(product.pQuantity, product._id)}
                   </div>
                   <div className="text-lg">
-                    ${subTotal(product.pPrice, product.pQuantity)}
+                    {/* ${subTotal(product.pPrice, product.pQuantity)} */}
                   </div>
                 </div>
               </div>
