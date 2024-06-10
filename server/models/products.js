@@ -27,10 +27,12 @@ const productSchema = new mongoose.Schema(
       type: ObjectId,
       ref: "categories",
     },
-    pImages: {
-      type: Array,
-      required: true,
-    },
+    pImages: [
+      {
+        data: Buffer,
+        contentType: String,
+      },
+    ],
     pOffer: {
       type: String,
       default: null,

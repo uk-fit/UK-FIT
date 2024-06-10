@@ -1,61 +1,55 @@
 const fs = require("fs");
-const categoryModel = require("../models/categories");
-const productModel = require("../models/products");
-const orderModel = require("../models/orders");
-const userModel = require("../models/users");
 const customizeModel = require("../models/customize");
 
 class Customize {
   async getImages(req, res) {
     try {
-      let Images = await customizeModel.find({});
-      if (Images) {
-        return res.json({ Images });
+      let images = await customizeModel.find({});
+      if (images) {
+        return res.json({ images });
       }
     } catch (err) {
       console.log(err);
+      return res.status(500).json({ error: "Server error" });
     }
   }
 
   async uploadSlideImage(req, res) {
-    let image = req.file.filename;
-    if (!image) {
-      return res.json({ error: "All field required" });
+    if (!req.file) {
+      return res.json({ error: "All fields are required" });
     }
+
     try {
-      let newCustomzie = new customizeModel({
-        slideImage: image,
+      let newCustomize = new customizeModel({
+        slideImage: {
+          data: req.file.buffer, // Use req.file.buffer to store image data
+          contentType: req.file.mimetype, // Use req.file.mimetype to store content type
+        },
       });
-      let save = await newCustomzie.save();
+      let save = await newCustomize.save();
       if (save) {
-        return res.json({ success: "Image upload successfully" });
+        return res.json({ success: "Image uploaded successfully" });
       }
     } catch (err) {
       console.log(err);
+      return res.status(500).json({ error: "Server error" });
     }
   }
 
   async deleteSlideImage(req, res) {
     let { id } = req.body;
     if (!id) {
-      return res.json({ error: "All field required" });
+      return res.json({ error: "All fields are required" });
     } else {
       try {
         let deletedSlideImage = await customizeModel.findById(id);
-        const filePath = `../server/public/uploads/customize/${deletedSlideImage.slideImage}`;
-
         let deleteImage = await customizeModel.findByIdAndDelete(id);
         if (deleteImage) {
-          // Delete Image from uploads -> customizes folder
-          fs.unlink(filePath, (err) => {
-            if (err) {
-              console.log(err);
-            }
-            return res.json({ success: "Image deleted successfully" });
-          });
+          return res.json({ success: "Image deleted successfully" });
         }
       } catch (err) {
         console.log(err);
+        return res.status(500).json({ error: "Server error" });
       }
     }
   }
@@ -71,6 +65,7 @@ class Customize {
       }
     } catch (err) {
       console.log(err);
+      return res.status(500).json({ error: "Server error" });
     }
   }
 }

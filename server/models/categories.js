@@ -11,7 +11,8 @@ const categorySchema = new mongoose.Schema(
       required: true,
     },
     cImage: {
-      type: String,
+      data: Buffer,
+      contentType: String,
     },
     cStatus: {
       type: String,
