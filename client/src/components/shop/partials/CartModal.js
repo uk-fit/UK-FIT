@@ -101,7 +101,7 @@ const CartModal = () => {
                       <div className="text-white flex space-x-2 my-4 items-center">
                         <img
                           className="w-16 h-16 object-cover object-center"
-                          src={`${apiURL}/uploads/products/${item.pImages[0]}`}
+                          src={item.pImages[0].url}
                           alt="cartProduct"
                         />
                         <div className="relative w-full flex flex-col">
@@ -194,7 +194,7 @@ const CartModal = () => {
                       });
                     }}
                   >
-                    Checkout Rs{data.cartTotalCost}.00
+                    {/* Checkout Rs{data.cartTotalCost}.00 */}
                   </div>
                 )}
               </Fragment>

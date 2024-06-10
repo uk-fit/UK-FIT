@@ -1,6 +1,13 @@
 const { toTitleCase } = require("../config/function");
 const categoryModel = require("../models/categories");
 const fs = require("fs");
+const cloudinary = require('cloudinary').v2;
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 class Category {
   async getAllCategory(req, res) {
@@ -11,55 +18,47 @@ class Category {
       }
     } catch (err) {
       console.log(err);
+      return res.json({ error: "Something went wrong" });
     }
   }
 
   async postAddCategory(req, res) {
     let { cName, cDescription, cStatus } = req.body;
-    let cImage = req.file.filename;
-    const filePath = `../server/public/uploads/categories/${cImage}`;
+    const file = req.file;
 
-    if (!cName || !cDescription || !cStatus || !cImage) {
-      fs.unlink(filePath, (err) => {
-        if (err) {
-          console.log(err);
-        }
-        return res.json({ error: "All filled must be required" });
-      });
-    } else {
-      cName = toTitleCase(cName);
-      try {
-        let checkCategoryExists = await categoryModel.findOne({ cName: cName });
-        if (checkCategoryExists) {
-          fs.unlink(filePath, (err) => {
-            if (err) {
-              console.log(err);
-            }
-            return res.json({ error: "Category already exists" });
-          });
-        } else {
-          let newCategory = new categoryModel({
-            cName,
-            cDescription,
-            cStatus,
-            cImage,
-          });
-          await newCategory.save((err) => {
-            if (!err) {
-              return res.json({ success: "Category created successfully" });
-            }
-          });
-        }
-      } catch (err) {
-        console.log(err);
+    if (!cName || !cDescription || !cStatus || !file) {
+      return res.json({ error: "All fields are required" });
+    }
+
+    try {
+      let checkCategoryExists = await categoryModel.findOne({ cName: cName });
+      if (checkCategoryExists) {
+        return res.json({ error: "Category already exists" });
       }
+
+      // Upload image to Cloudinary
+      const result = await cloudinary.uploader.upload(file.path);
+
+      let newCategory = new categoryModel({
+        cName: toTitleCase(cName),
+        cDescription,
+        cStatus,
+        cImage: result.secure_url, // Use the secure URL provided by Cloudinary
+      });
+
+      await newCategory.save();
+
+      return res.json({ success: "Category created successfully" });
+    } catch (err) {
+      console.log(err);
+      return res.json({ error: "Something went wrong" });
     }
   }
 
   async postEditCategory(req, res) {
     let { cId, cDescription, cStatus } = req.body;
     if (!cId || !cDescription || !cStatus) {
-      return res.json({ error: "All filled must be required" });
+      return res.json({ error: "All fields are required" });
     }
     try {
       let editCategory = categoryModel.findByIdAndUpdate(cId, {
@@ -69,35 +68,34 @@ class Category {
       });
       let edit = await editCategory.exec();
       if (edit) {
-        return res.json({ success: "Category edit successfully" });
+        return res.json({ success: "Category edited successfully" });
       }
     } catch (err) {
       console.log(err);
+      return res.json({ error: "Something went wrong" });
     }
   }
 
   async getDeleteCategory(req, res) {
     let { cId } = req.body;
     if (!cId) {
-      return res.json({ error: "All filled must be required" });
-    } else {
-      try {
-        let deletedCategoryFile = await categoryModel.findById(cId);
-        const filePath = `../server/public/uploads/categories/${deletedCategoryFile.cImage}`;
+      return res.json({ error: "Category ID is required" });
+    }
 
-        let deleteCategory = await categoryModel.findByIdAndDelete(cId);
-        if (deleteCategory) {
-          // Delete Image from uploads -> categories folder 
-          fs.unlink(filePath, (err) => {
-            if (err) {
-              console.log(err);
-            }
-            return res.json({ success: "Category deleted successfully" });
-          });
-        }
-      } catch (err) {
-        console.log(err);
+    try {
+      let deletedCategoryFile = await categoryModel.findById(cId);
+      const public_id = deletedCategoryFile.cImage.split('/').pop().split('.')[0];
+
+      // Delete image from Cloudinary
+      await cloudinary.uploader.destroy(public_id);
+
+      let deleteCategory = await categoryModel.findByIdAndDelete(cId);
+      if (deleteCategory) {
+        return res.json({ success: "Category deleted successfully" });
       }
+    } catch (err) {
+      console.log(err);
+      return res.json({ error: "Something went wrong" });
     }
   }
 }

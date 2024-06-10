@@ -30,7 +30,7 @@ const Slider = (props) => {
         {data.sliderImages.length > 0 ? (
           <img
             className="slider-image"
-            src={`${apiURL}/uploads/customize/${data.sliderImages[slide].slideImage}`}
+            src={data.sliderImages[slide].slideImage} // Cloudinary URL directly
             alt="sliderImage"
           />
         ) : (
