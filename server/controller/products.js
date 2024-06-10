@@ -1,6 +1,23 @@
 const productModel = require("../models/products");
+const cloudinary = require("cloudinary").v2;
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 class Product {
+  static async deleteImages(images) {
+    try {
+      for (const image of images) {
+        await cloudinary.uploader.destroy(image.public_id);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   async getAllProduct(req, res) {
     try {
       let products = await productModel
@@ -12,7 +29,7 @@ class Product {
       }
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ error: "Internal server error" });
+      return res.json({ error: "Failed to fetch products" });
     }
   }
 
@@ -20,31 +37,27 @@ class Product {
     let { pName, pDescription, pPrice, pQuantity, pCategory, pOffer, pStatus } = req.body;
     let images = req.files;
 
-    // Validation
-    if (!pName || !pDescription || !pPrice || !pQuantity || !pCategory || !pStatus) {
-      return res.json({ error: "All fields must be filled" });
+    if (
+      !pName ||
+      !pDescription ||
+      !pPrice ||
+      !pQuantity ||
+      !pCategory ||
+      !pOffer ||
+      !pStatus
+    ) {
+      return res.json({ error: "All fields are required" });
     }
-
-    // Validate Name and description
-    if (pName.length > 255 || pDescription.length > 3000) {
-      return res.json({
-        error: "Name must be less than 255 characters and Description must be less than 3000 characters",
-      });
-    }
-
-    // Validate Images
-    if (images.length !== 2) {
-      return res.json({ error: "Must provide exactly 2 images" });
-    }
-
-    const imageArray = images.map(file => ({
-      data: file.buffer,
-      contentType: file.mimetype,
-    }));
 
     try {
+      let allImages = [];
+      for (const img of images) {
+        const result = await cloudinary.uploader.upload(img.path);
+        allImages.push({ url: result.secure_url, public_id: result.public_id });
+      }
+
       let newProduct = new productModel({
-        pImages: imageArray,
+        pImages: allImages,
         pName,
         pDescription,
         pPrice,
@@ -53,38 +66,35 @@ class Product {
         pOffer,
         pStatus,
       });
+
       let save = await newProduct.save();
       if (save) {
         return res.json({ success: "Product created successfully" });
       }
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ error: "Internal server error" });
-    }
-  }
-
-  async postEditProduct(req, res) {
-    let { pId, pName, pDescription, pPrice, pQuantity, pCategory, pOffer, pStatus, pImages } = req.body;
-    let editImages = req.files;
-
-    // Validate other fields
-    if (!pId || !pName || !pDescription || !pPrice || !pQuantity || !pCategory || !pStatus) {
-      return res.json({ error: "All fields must be filled" });
+      return res.json({ error: "Failed to add product" });
     }
 
-    // Validate Name and description
-    if (pName.length > 255 || pDescription.length > 3000) {
-      return res.json({
-        error: "Name must be less than 255 characters and Description must be less than 3000 characters",
-      });
+    const imageArray = images.map(file => ({
+      data: file.buffer,
+      contentType: file.mimetype,
+    }));
+
+    if (
+      !pId ||
+      !pName ||
+      !pDescription ||
+      !pPrice ||
+      !pQuantity ||
+      !pCategory ||
+      !pOffer ||
+      !pStatus
+    ) {
+      return res.json({ error: "All fields are required" });
     }
 
-    // Validate Update Images
-    if (editImages && editImages.length !== 2) {
-      return res.json({ error: "Must provide exactly 2 images" });
-    }
-
-    const editData = {
+    let editData = {
       pName,
       pDescription,
       pPrice,
@@ -93,49 +103,62 @@ class Product {
       pOffer,
       pStatus,
     };
-
-    if (editImages.length === 2) {
-      const imageArray = editImages.map(file => ({
-        data: file.buffer,
-        contentType: file.mimetype,
-      }));
-      editData.pImages = imageArray;
-    }
-
-    try {
-      let editProduct = await productModel.findByIdAndUpdate(pId, editData, { new: true });
-      if (editProduct) {
-        return res.json({ success: "Product edited successfully" });
+    if (editImages && editImages.length == 2) {
+      try {
+        let allEditImages = [];
+        for (const img of editImages) {
+          const result = await cloudinary.uploader.upload(img.path);
+          allEditImages.push({ url: result.secure_url, public_id: result.public_id });
+        }
+        editData = { ...editData, pImages: allEditImages };
+        Product.deleteImages(pImages);
+      } catch (err) {
+        console.log(err);
+        return res.json({ error: "Failed to upload images" });
       }
     } catch (err) {
       console.log(err);
       return res.status(500).json({ error: "Internal server error" });
+    }
+
+    try {
+      let editProduct = productModel.findByIdAndUpdate(pId, editData);
+      editProduct.exec((err) => {
+        if (err) {
+          console.log(err);
+          return res.json({ error: "Failed to edit product" });
+        }
+        return res.json({ success: "Product edit successfully" });
+      });
+    } catch (err) {
+      console.log(err);
+      return res.json({ error: "Failed to edit product" });
     }
   }
 
   async getDeleteProduct(req, res) {
     let { pId } = req.body;
     if (!pId) {
-      return res.json({ error: "All fields must be filled" });
+      return res.json({ error: "All fields are required" });
     }
 
     try {
+      let deleteProductObj = await productModel.findById(pId);
       let deleteProduct = await productModel.findByIdAndDelete(pId);
       if (deleteProduct) {
+        Product.deleteImages(deleteProductObj.pImages);
         return res.json({ success: "Product deleted successfully" });
-      } else {
-        return res.json({ error: "Product not found" });
       }
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ error: "Internal server error" });
+      return res.json({ error: "Failed to delete product" });
     }
   }
 
   async getSingleProduct(req, res) {
     let { pId } = req.body;
     if (!pId) {
-      return res.json({ error: "All fields must be filled" });
+      return res.json({ error: "All fields are required" });
     }
 
     try {
@@ -144,34 +167,37 @@ class Product {
         .populate("pCategory", "cName")
         .populate("pRatingsReviews.user", "name email userImage");
       if (singleProduct) {
-        return res.json({ product: singleProduct });
+        return res.json({ Product: singleProduct });
       }
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ error: "Internal server error" });
+      return res.json({ error: "Failed to fetch product" });
     }
   }
 
   async getProductByCategory(req, res) {
     let { catId } = req.body;
     if (!catId) {
-      return res.json({ error: "All fields must be filled" });
+      return res.json({ error: "All fields are required" });
     }
 
     try {
-      let products = await productModel.find({ pCategory: catId }).populate("pCategory", "cName");
+      let products = await productModel
+        .find({ pCategory: catId })
+        .populate("pCategory", "cName");
       if (products) {
-        return res.json({ products });
+        return res.json({ Products: products });
       }
     } catch (err) {
-      return res.json({ error: "Error retrieving products by category" });
+      console.log(err);
+      return res.json({ error: "Failed to fetch products" });
     }
   }
 
   async getProductByPrice(req, res) {
     let { price } = req.body;
     if (!price) {
-      return res.json({ error: "All fields must be filled" });
+      return res.json({ error: "All fields are required" });
     }
 
     try {
@@ -180,92 +206,98 @@ class Product {
         .populate("pCategory", "cName")
         .sort({ pPrice: -1 });
       if (products) {
-        return res.json({ products });
+        return res.json({ Products: products });
       }
     } catch (err) {
-      return res.json({ error: "Error filtering products by price" });
+      console.log(err);
+      return res.json({ error: "Failed to fetch products" });
     }
   }
 
   async getWishProduct(req, res) {
     let { productArray } = req.body;
     if (!productArray) {
-      return res.json({ error: "All fields must be filled" });
+      return res.json({ error: "All fields are required" });
     }
 
     try {
-      let wishProducts = await productModel.find({ _id: { $in: productArray } });
+      let wishProducts = await productModel.find({
+        _id: { $in: productArray },
+      });
       if (wishProducts) {
-        return res.json({ products: wishProducts });
+        return res.json({ Products: wishProducts });
       }
     } catch (err) {
-      return res.json({ error: "Error retrieving wish list products" });
+      console.log(err);
+      return res.json({ error: "Failed to fetch products" });
     }
   }
 
   async getCartProduct(req, res) {
     let { productArray } = req.body;
     if (!productArray) {
-      return res.json({ error: "All fields must be filled" });
+      return res.json({ error: "All fields are required" });
     }
 
     try {
-      let cartProducts = await productModel.find({ _id: { $in: productArray } });
+      let cartProducts = await productModel.find({
+        _id: { $in: productArray },
+      });
       if (cartProducts) {
-        return res.json({ products: cartProducts });
+        return res.json({ Products: cartProducts });
       }
     } catch (err) {
-      return res.json({ error: "Error retrieving cart products" });
+      console.log(err);
+      return res.json({ error: "Failed to fetch products" });
     }
   }
 
   async postAddReview(req, res) {
     let { pId, uId, rating, review } = req.body;
     if (!pId || !rating || !review || !uId) {
-      return res.json({ error: "All fields must be filled" });
+      return res.json({ error: "All fields are required" });
     }
 
     try {
-      let product = await productModel.findById(pId);
-      if (product) {
-        const existingReview = product.pRatingsReviews.find(r => r.user.toString() === uId);
-        if (existingReview) {
-          return res.json({ error: "You have already reviewed this product" });
-        }
-
-        product.pRatingsReviews.push({ review, user: uId, rating });
-        await product.save();
-        return res.json({ success: "Thanks for your review" });
-      } else {
-        return res.json({ error: "Product not found" });
+      let checkReviewRatingExists = await productModel.findOne({ _id: pId });
+      if (checkReviewRatingExists.pRatingsReviews.some(item => item.user == uId)) {
+        return res.json({ error: "You have already reviewed the product" });
       }
+
+      let newRatingReview = await productModel.findByIdAndUpdate(pId, {
+        $push: {
+          pRatingsReviews: {
+            review: review,
+            user: uId,
+            rating: rating,
+          },
+        },
+      });
+      return res.json({ success: "Thanks for your review" });
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ error: "Internal server error" });
+      return res.json({ error: "Failed to add review" });
     }
   }
 
   async deleteReview(req, res) {
     let { rId, pId } = req.body;
-    if (!rId || !pId) {
-      return res.json({ error: "All fields must be filled" });
+    if (!rId) {
+      return res.json({ message: "All fields are required" });
     }
 
     try {
-      let product = await productModel.findById(pId);
-      if (product) {
-        product.pRatingsReviews = product.pRatingsReviews.filter(r => r._id.toString() !== rId);
-        await product.save();
-        return res.json({ success: "Your review has been deleted" });
-      } else {
-        return res.json({ error: "Product not found" });
-      }
+      let reviewDelete = await productModel.findByIdAndUpdate(pId, {
+        $pull: { pRatingsReviews: { _id: rId } },
+      });
+      return res.json({ success: "Your review is deleted" });
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ error: "Internal server error" });
+      return res.json({ error: "Failed to delete review" });
     }
   }
 }
 
 const productController = new Product();
 module.exports = productController;
+

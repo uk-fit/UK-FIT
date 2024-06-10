@@ -1,5 +1,12 @@
-const fs = require("fs");
+const cloudinary = require('cloudinary').v2;
+require('dotenv').config();
 const customizeModel = require("../models/customize");
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 class Customize {
   async getImages(req, res) {
@@ -10,21 +17,22 @@ class Customize {
       }
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ error: "Server error" });
+      return res.status(500).json({ error: "Failed to fetch images" });
     }
   }
 
   async uploadSlideImage(req, res) {
     if (!req.file) {
-      return res.json({ error: "All fields are required" });
+      return res.json({ error: "Image file required" });
     }
 
     try {
+      // Upload image to Cloudinary
+      const result = await cloudinary.uploader.upload(req.file.path);
+
+      // Save the public URL to the database
       let newCustomize = new customizeModel({
-        slideImage: {
-          data: req.file.buffer, // Use req.file.buffer to store image data
-          contentType: req.file.mimetype, // Use req.file.mimetype to store content type
-        },
+        slideImage: result.secure_url,
       });
       let save = await newCustomize.save();
       if (save) {
@@ -32,25 +40,36 @@ class Customize {
       }
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ error: "Server error" });
+      return res.status(500).json({ error: "Failed to upload image" });
     }
   }
 
   async deleteSlideImage(req, res) {
     let { id } = req.body;
     if (!id) {
-      return res.json({ error: "All fields are required" });
-    } else {
-      try {
-        let deletedSlideImage = await customizeModel.findById(id);
-        let deleteImage = await customizeModel.findByIdAndDelete(id);
-        if (deleteImage) {
-          return res.json({ success: "Image deleted successfully" });
-        }
-      } catch (err) {
-        console.log(err);
-        return res.status(500).json({ error: "Server error" });
+      return res.json({ error: "Image ID required" });
+    }
+    try {
+      let deletedSlideImage = await customizeModel.findById(id);
+      if (!deletedSlideImage) {
+        return res.status(404).json({ error: "Image not found" });
       }
+
+      // Delete image from Cloudinary
+      const publicId = deletedSlideImage.slideImage.split('/').pop().split('.')[0];
+      const result = await cloudinary.uploader.destroy(publicId);
+      
+      if (result.result === 'ok') {
+        // Delete image record from database
+        await customizeModel.findByIdAndDelete(id);
+        return res.json({ success: "Image deleted successfully" });
+      } else {
+        console.log(result);
+        return res.status(500).json({ error: "Failed to delete image from Cloudinary" });
+      }
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ error: "Failed to delete image" });
     }
   }
 
@@ -60,15 +79,12 @@ class Customize {
       let Products = await productModel.find({}).count();
       let Orders = await orderModel.find({}).count();
       let Users = await userModel.find({}).count();
-      if (Categories && Products && Orders) {
-        return res.json({ Categories, Products, Orders, Users });
-      }
+      return res.json({ Categories, Products, Orders, Users });
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ error: "Server error" });
+      return res.status(500).json({ error: "Failed to fetch data" });
     }
   }
 }
 
-const customizeController = new Customize();
-module.exports = customizeController;
+module.exports = new Customize();

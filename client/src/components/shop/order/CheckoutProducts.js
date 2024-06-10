@@ -185,7 +185,7 @@ const CheckoutProducts = ({ products }) => {
                   <img
                     onClick={(e) => history.push(`/products/${product._id}`)}
                     className="cursor-pointer md:h-16 md:w-16 object-cover object-center"
-                    src={`${apiURL}/uploads/products/${product.pImages[0]}`}
+                    src={product.pImages[0].url}
                     alt="cartProductImage"
                   />
                   <div className="text-lg md:ml-6 truncate">
@@ -197,7 +197,7 @@ const CheckoutProducts = ({ products }) => {
                     {quantity(product.pQuantity, product._id)}
                   </div>
                   <div className="text-lg">
-                    ${subTotal(product.pPrice, product.pQuantity)}
+                    {/* ${subTotal(product.pPrice, product.pQuantity)} */}
                   </div>
                 </div>
               </div>
