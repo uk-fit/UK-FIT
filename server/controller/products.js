@@ -20,13 +20,11 @@ class Product {
 
   async getAllProduct(req, res) {
     try {
-      let products = await productModel
+      let Products = await productModel
         .find({})
         .populate("pCategory", "_id cName")
         .sort({ _id: -1 });
-      if (products) {
-        return res.json({ products });
-      }
+      return res.json({ Products });
     } catch (err) {
       console.log(err);
       return res.json({ error: "Failed to fetch products" });
@@ -34,29 +32,21 @@ class Product {
   }
 
   async postAddProduct(req, res) {
-    let { pName, pDescription, pPrice, pQuantity, pCategory, pOffer, pStatus } = req.body;
-    let images = req.files;
+    const { pName, pDescription, pPrice, pQuantity, pCategory, pOffer, pStatus } = req.body;
+    const images = req.files;
 
-    if (
-      !pName ||
-      !pDescription ||
-      !pPrice ||
-      !pQuantity ||
-      !pCategory ||
-      !pOffer ||
-      !pStatus
-    ) {
+    if (!pName || !pDescription || !pPrice || !pQuantity || !pCategory || !pOffer || !pStatus) {
       return res.json({ error: "All fields are required" });
     }
 
     try {
-      let allImages = [];
+      const allImages = [];
       for (const img of images) {
         const result = await cloudinary.uploader.upload(img.path);
         allImages.push({ url: result.secure_url, public_id: result.public_id });
       }
 
-      let newProduct = new productModel({
+      const newProduct = new productModel({
         pImages: allImages,
         pName,
         pDescription,
@@ -67,30 +57,29 @@ class Product {
         pStatus,
       });
 
-      let save = await newProduct.save();
-      if (save) {
-        return res.json({ success: "Product created successfully" });
-      }
+      const save = await newProduct.save();
+      return res.json({ success: "Product created successfully", product: save });
     } catch (err) {
       console.log(err);
       return res.json({ error: "Failed to add product" });
     }
+  }
 
-    const imageArray = images.map(file => ({
-      data: file.buffer,
-      contentType: file.mimetype,
-    }));
+  async postEditProduct(req, res) {
+    const {
+      pId,
+      pName,
+      pDescription,
+      pPrice,
+      pQuantity,
+      pCategory,
+      pOffer,
+      pStatus,
+      pImages,
+    } = req.body;
+    const editImages = req.files;
 
-    if (
-      !pId ||
-      !pName ||
-      !pDescription ||
-      !pPrice ||
-      !pQuantity ||
-      !pCategory ||
-      !pOffer ||
-      !pStatus
-    ) {
+    if (!pId || !pName || !pDescription || !pPrice || !pQuantity || !pCategory || !pOffer || !pStatus) {
       return res.json({ error: "All fields are required" });
     }
 
@@ -103,33 +92,25 @@ class Product {
       pOffer,
       pStatus,
     };
-    if (editImages && editImages.length == 2) {
+
+    if (editImages && editImages.length > 0) {
       try {
-        let allEditImages = [];
+        const allEditImages = [];
         for (const img of editImages) {
           const result = await cloudinary.uploader.upload(img.path);
           allEditImages.push({ url: result.secure_url, public_id: result.public_id });
         }
         editData = { ...editData, pImages: allEditImages };
-        Product.deleteImages(pImages);
+        await Product.deleteImages(pImages);
       } catch (err) {
         console.log(err);
         return res.json({ error: "Failed to upload images" });
       }
-    } catch (err) {
-      console.log(err);
-      return res.status(500).json({ error: "Internal server error" });
     }
 
     try {
-      let editProduct = productModel.findByIdAndUpdate(pId, editData);
-      editProduct.exec((err) => {
-        if (err) {
-          console.log(err);
-          return res.json({ error: "Failed to edit product" });
-        }
-        return res.json({ success: "Product edit successfully" });
-      });
+      await productModel.findByIdAndUpdate(pId, editData);
+      return res.json({ success: "Product edited successfully" });
     } catch (err) {
       console.log(err);
       return res.json({ error: "Failed to edit product" });
@@ -137,18 +118,19 @@ class Product {
   }
 
   async getDeleteProduct(req, res) {
-    let { pId } = req.body;
+    const { pId } = req.body;
     if (!pId) {
       return res.json({ error: "All fields are required" });
     }
 
     try {
-      let deleteProductObj = await productModel.findById(pId);
-      let deleteProduct = await productModel.findByIdAndDelete(pId);
-      if (deleteProduct) {
-        Product.deleteImages(deleteProductObj.pImages);
-        return res.json({ success: "Product deleted successfully" });
+      const deleteProductObj = await productModel.findById(pId);
+      if (!deleteProductObj) {
+        return res.json({ error: "Product not found" });
       }
+      await productModel.findByIdAndDelete(pId);
+      await Product.deleteImages(deleteProductObj.pImages);
+      return res.json({ success: "Product deleted successfully" });
     } catch (err) {
       console.log(err);
       return res.json({ error: "Failed to delete product" });
@@ -156,19 +138,20 @@ class Product {
   }
 
   async getSingleProduct(req, res) {
-    let { pId } = req.body;
+    const { pId } = req.body;
     if (!pId) {
       return res.json({ error: "All fields are required" });
     }
 
     try {
-      let singleProduct = await productModel
+      const singleProduct = await productModel
         .findById(pId)
         .populate("pCategory", "cName")
         .populate("pRatingsReviews.user", "name email userImage");
       if (singleProduct) {
         return res.json({ Product: singleProduct });
       }
+      return res.json({ error: "Product not found" });
     } catch (err) {
       console.log(err);
       return res.json({ error: "Failed to fetch product" });
@@ -176,18 +159,16 @@ class Product {
   }
 
   async getProductByCategory(req, res) {
-    let { catId } = req.body;
+    const { catId } = req.body;
     if (!catId) {
       return res.json({ error: "All fields are required" });
     }
 
     try {
-      let products = await productModel
+      const products = await productModel
         .find({ pCategory: catId })
         .populate("pCategory", "cName");
-      if (products) {
-        return res.json({ Products: products });
-      }
+      return res.json({ Products: products });
     } catch (err) {
       console.log(err);
       return res.json({ error: "Failed to fetch products" });
@@ -195,19 +176,17 @@ class Product {
   }
 
   async getProductByPrice(req, res) {
-    let { price } = req.body;
+    const { price } = req.body;
     if (!price) {
       return res.json({ error: "All fields are required" });
     }
 
     try {
-      let products = await productModel
+      const products = await productModel
         .find({ pPrice: { $lt: price } })
         .populate("pCategory", "cName")
         .sort({ pPrice: -1 });
-      if (products) {
-        return res.json({ Products: products });
-      }
+      return res.json({ Products: products });
     } catch (err) {
       console.log(err);
       return res.json({ error: "Failed to fetch products" });
@@ -215,18 +194,14 @@ class Product {
   }
 
   async getWishProduct(req, res) {
-    let { productArray } = req.body;
+    const { productArray } = req.body;
     if (!productArray) {
       return res.json({ error: "All fields are required" });
     }
 
     try {
-      let wishProducts = await productModel.find({
-        _id: { $in: productArray },
-      });
-      if (wishProducts) {
-        return res.json({ Products: wishProducts });
-      }
+      const wishProducts = await productModel.find({ _id: { $in: productArray } });
+      return res.json({ Products: wishProducts });
     } catch (err) {
       console.log(err);
       return res.json({ error: "Failed to fetch products" });
@@ -234,18 +209,14 @@ class Product {
   }
 
   async getCartProduct(req, res) {
-    let { productArray } = req.body;
+    const { productArray } = req.body;
     if (!productArray) {
       return res.json({ error: "All fields are required" });
     }
 
     try {
-      let cartProducts = await productModel.find({
-        _id: { $in: productArray },
-      });
-      if (cartProducts) {
-        return res.json({ Products: cartProducts });
-      }
+      const cartProducts = await productModel.find({ _id: { $in: productArray } });
+      return res.json({ Products: cartProducts });
     } catch (err) {
       console.log(err);
       return res.json({ error: "Failed to fetch products" });
@@ -253,26 +224,24 @@ class Product {
   }
 
   async postAddReview(req, res) {
-    let { pId, uId, rating, review } = req.body;
+    const { pId, uId, rating, review } = req.body;
     if (!pId || !rating || !review || !uId) {
       return res.json({ error: "All fields are required" });
     }
 
     try {
-      let checkReviewRatingExists = await productModel.findOne({ _id: pId });
-      if (checkReviewRatingExists.pRatingsReviews.some(item => item.user == uId)) {
+      const product = await productModel.findById(pId);
+      if (!product) {
+        return res.json({ error: "Product not found" });
+      }
+
+      const existingReview = product.pRatingsReviews.some(item => item.user.toString() === uId);
+      if (existingReview) {
         return res.json({ error: "You have already reviewed the product" });
       }
 
-      let newRatingReview = await productModel.findByIdAndUpdate(pId, {
-        $push: {
-          pRatingsReviews: {
-            review: review,
-            user: uId,
-            rating: rating,
-          },
-        },
-      });
+      product.pRatingsReviews.push({ review, user: uId, rating });
+      await product.save();
       return res.json({ success: "Thanks for your review" });
     } catch (err) {
       console.log(err);
@@ -281,15 +250,25 @@ class Product {
   }
 
   async deleteReview(req, res) {
-    let { rId, pId } = req.body;
-    if (!rId) {
-      return res.json({ message: "All fields are required" });
+    const { rId, pId } = req.body;
+    if (!rId || !pId) {
+     
+      return res.json({ error: "All fields are required" });
     }
 
     try {
-      let reviewDelete = await productModel.findByIdAndUpdate(pId, {
-        $pull: { pRatingsReviews: { _id: rId } },
-      });
+      const product = await productModel.findById(pId);
+      if (!product) {
+        return res.json({ error: "Product not found" });
+      }
+
+      const reviewIndex = product.pRatingsReviews.findIndex(review => review._id.toString() === rId);
+      if (reviewIndex === -1) {
+        return res.json({ error: "Review not found" });
+      }
+
+      product.pRatingsReviews.splice(reviewIndex, 1);
+      await product.save();
       return res.json({ success: "Your review is deleted" });
     } catch (err) {
       console.log(err);
@@ -300,4 +279,3 @@ class Product {
 
 const productController = new Product();
 module.exports = productController;
-
