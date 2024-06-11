@@ -3,8 +3,7 @@ const mongoose = require("mongoose");
 const customizeSchema = new mongoose.Schema(
   {
     slideImage: {
-      data: Buffer,
-      contentType: String,
+      type: String,
     },
     firstShow: {
       type: Number,

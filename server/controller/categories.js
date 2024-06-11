@@ -38,12 +38,12 @@ class Category {
 
       // Upload image to Cloudinary
       const result = await cloudinary.uploader.upload(file.path);
-
+      console.log(result);
       let newCategory = new categoryModel({
         cName: toTitleCase(cName),
         cDescription,
         cStatus,
-        cImage: result.secure_url, // Use the secure URL provided by Cloudinary
+        cImage: result.url, // Use the secure URL provided by Cloudinary
       });
 
       await newCategory.save();

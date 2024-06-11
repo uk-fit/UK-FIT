@@ -29,8 +29,8 @@ const productSchema = new mongoose.Schema(
     },
     pImages: [
       {
-        data: Buffer,
-        contentType: String,
+        type: Array,
+        required: true,
       },
     ],
     pOffer: {
