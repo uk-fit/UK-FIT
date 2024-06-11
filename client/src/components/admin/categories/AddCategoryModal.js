@@ -46,6 +46,8 @@ const AddCategoryModal = (props) => {
     }
 
     try {
+      
+      // console.log(fData);
       let responseData = await createCategory(fData);
       if (responseData.success) {
         fetchData();

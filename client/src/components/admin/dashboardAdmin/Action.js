@@ -23,8 +23,10 @@ export const todayAllOrders = async (dispatch) => {
 export const sliderImages = async (dispatch) => {
   try {
     let responseData = await getSliderImages();
-    if (responseData && responseData.Images) {
-      dispatch({ type: "sliderImages", payload: responseData.Images });
+    // console.log("logging response data from sliderImages in action.js admin");
+    // console.log(responseData.images);
+    if (responseData && responseData.images) {
+      dispatch({ type: "sliderImages", payload: responseData.images });
     }
   } catch (error) {
     console.log(error);

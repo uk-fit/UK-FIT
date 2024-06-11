@@ -6,6 +6,8 @@ const apiURL = process.env.REACT_APP_API_URL;
 
 const Customize = () => {
   const { data, dispatch } = useContext(DashboardContext);
+  // console.log("loggin items")
+  // console.log(item)
 
   return (
     <Fragment>
@@ -120,7 +122,8 @@ const UploadImageSection = () => {
 
 const AllImages = () => {
   const { data, dispatch } = useContext(DashboardContext);
-
+  // console.log("logging data from admin")
+  // console.log(data);
   useEffect(() => {
     sliderImages(dispatch);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -155,6 +158,8 @@ const AllImages = () => {
       <div className="grid grid-cols-1 md:grid md:grid-cols-2 lg:grid-cols-3 my-4">
         {data.sliderImages.length > 0 ? (
           data.sliderImages.map((item, index) => {
+            // console.log("logging item from admin");
+            // console.log(item);
             return (
               <div key={index} className="relative col-span-1 m-2 border">
                 <img

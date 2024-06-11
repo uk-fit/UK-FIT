@@ -10,6 +10,8 @@ const apiURL = process.env.REACT_APP_API_URL;
 const Slider = (props) => {
   const { data, dispatch } = useContext(HomeContext);
   const [slide, setSlide] = useState(0);
+  console.log("logging from shop data slider.js");
+  console.log(data);
 
   useEffect(() => {
     sliderImages(dispatch);
