@@ -24,7 +24,7 @@ export const sliderImages = async (dispatch) => {
   try {
     let responseData = await getSliderImages();
     // console.log("logging response data from sliderImages in action.js admin");
-    // console.log(responseData.images);
+    console.log("prakhar");
     if (responseData && responseData.images) {
       dispatch({ type: "sliderImages", payload: responseData.images });
     }
