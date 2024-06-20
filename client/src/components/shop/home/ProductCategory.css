@@ -1,0 +1,98 @@
+/* ProductCategory.css */
+
+/* General styles */
+.flex {
+    display: flex;
+  }
+  
+  .justify-between {
+    justify-content: space-between;
+  }
+  
+  .items-center {
+    align-items: center;
+  }
+  
+  .space-x-1 > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-x-reverse: 0;
+    margin-right: calc(0.25rem * var(--tw-space-x-reverse));
+    margin-left: calc(0.25rem * calc(1 - var(--tw-space-x-reverse)));
+  }
+  
+  .space-x-2 > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-x-reverse: 0;
+    margin-right: calc(0.5rem * var(--tw-space-x-reverse));
+    margin-left: calc(0.5rem * calc(1 - var(--tw-space-x-reverse)));
+  }
+  
+  .font-medium {
+    font-weight: 500;
+  }
+  
+  .text-md {
+    font-size: 1rem;
+  }
+  
+  .md\:text-lg {
+    font-size: 1.125rem;
+  }
+  
+  .text-yellow-700 {
+    color: #b7791f;
+  }
+  
+  .cursor-pointer {
+    cursor: pointer;
+  }
+  
+  /* Hover effects */
+  .flex:hover .text-yellow-700 {
+    color: #d69e2e;
+  }
+  
+  .flex:hover .text-gray-700 {
+    color: #4a5568;
+  }
+  
+  /* Container boundaries */
+  .container {
+    border: 1px solid #e2e8f0;
+    padding: 1rem;
+    border-radius: 0.5rem;
+  }
+  
+  .container:hover {
+    border-color: #cbd5e0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* SVG styling */
+  .w-4 {
+    width: 1rem;
+  }
+  
+  .h-4 {
+    height: 1rem;
+  }
+  
+  .text-gray-700 {
+    color: #4a5568;
+  }
+  
+  /* Additional utility classes */
+  .mr-2 {
+    margin-right: 0.5rem;
+  }
+  
+  .ml-2 {
+    margin-left: 0.5rem;
+  }
+  
+  .mt-2 {
+    margin-top: 0.5rem;
+  }
+  
+  .mb-2 {
+    margin-bottom: 0.5rem;
+  }
+  

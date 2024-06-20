@@ -7,7 +7,7 @@ const LoginSignup = (props) => {
   const { data, dispatch } = useContext(LayoutContext);
 
   const [login, setLogin] = useState(true);
-  const [loginValue, setLoginValue] = useState("Create an account");
+  const [loginValue, setLoginValue] = useState("Register With UK FIT !");
 
   const loginSignupModalToggle = () =>
     data.loginSignupModal
@@ -20,7 +20,7 @@ const LoginSignup = (props) => {
       setLoginValue("Login");
     } else {
       setLogin(true);
-      setLoginValue("Create an account");
+      setLoginValue("Register With UK FIT !");
     }
   };
 

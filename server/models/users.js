@@ -41,6 +41,10 @@ const userSchema = new mongoose.Schema(
       type: Array,
       default: [],
     },
+    businessName: {
+      type: String,
+      maxlength: 500, // You can adjust the maxlength as needed
+    },
   },
   { timestamps: true }
 );

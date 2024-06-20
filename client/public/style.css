@@ -21,7 +21,13 @@ html {
  */
 
 body {
-  margin: 0;
+  /* transform: scale(0.67);
+  transform-origin: auto; */
+  width: auto;
+  margin: 0 ;
+  height: auto;
+  font-size: 500;
+  /* margin: 0; */
 }
 
 /**
@@ -29,7 +35,7 @@ body {
  */
 
 main {
-  display: block;
+  display: flex;
 }
 
 /**
@@ -87448,4 +87454,64 @@ video {
     -webkit-animation: bounce 1s infinite;
             animation: bounce 1s infinite;
   }
+}
+
+
+@keyframes heartbeat {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.whatsapp-btn {
+  width: 70px;
+  height: 70px;
+  bottom: 15px;
+  right: 15px;
+  z-index: 9999;
+  position: fixed;
+  cursor: pointer!important;
+  border-radius: 50%;
+  text-align: center;
+  font-size: 40px;
+  border: 5px solid #fff;
+  color: #000;
+  background-color: #fff;
+  box-shadow: 0 0 4px 4px #ababab;
+  animation: heartbeat 1s infinite;
+}
+
+
+
+.whatsapp-btn i {
+    margin: auto;
+    cursor: pointer
+}
+
+.whatsapp-btn:hover {
+    color: #fff;
+    background-color: #000;
+    border: 5px solid #000;
+    cursor: pointer!important;
+    box-shadow: none;
+    -webkit-animation: none;
+    animation: none
+}
+
+.fa {
+  display: inline-block;
+  font: normal normal normal 14px/1 FontAwesome;
+  font-size: inherit;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale
+}
+.fa-whatsapp:before {
+  content: ""
 }

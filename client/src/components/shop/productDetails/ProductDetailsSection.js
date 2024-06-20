@@ -94,6 +94,11 @@ const ProductDetailsSection = (props) => {
   } else if (!sProduct) {
     return <div>No product</div>;
   }
+  const handleclick = () => {
+    const url = 'https://api.whatsapp.com/send?phone=919535698667';
+    window.open(url, '_blank');
+  };
+
   return (
     <Fragment>
       <Submenu
@@ -367,13 +372,23 @@ const ProductDetailsSection = (props) => {
                 <Fragment>
                   {layoutData.inCart !== null &&
                   layoutData.inCart.includes(sProduct._id) === true ? (
+                    <div>
                     <div
                       style={{ background: "#303031" }}
                       className={`px-4 py-2 text-white text-center cursor-not-allowed uppercase opacity-75`}
                     >
                       In cart
                     </div>
+                   <br></br>
+                    <div onClick={(e) => handleclick()
+                    }
+                    style={{ background: "#303031" }}
+                    className={`px-4 py-2 text-white text-center curson-pointer uppercase opacity-75`}>
+                      Enquire through Whatsapp !!
+                  </div>
+                    </div>
                   ) : (
+                    <div>
                     <div
                       onClick={(e) =>
                         addToCart(
@@ -392,18 +407,35 @@ const ProductDetailsSection = (props) => {
                     >
                       Add to cart
                     </div>
+                    <br></br>
+                    <div onClick={(e) => handleclick()
+                      }
+                      style={{ background: "#303031" }}
+                      className={`px-4 py-2 text-white text-center cursor-pointer uppercase`}>
+                        Enquire through Whatsapp !!
+                    </div>
+                    </div>
+                    
                   )}
                 </Fragment>
               ) : (
                 <Fragment>
                   {layoutData.inCart !== null &&
                   layoutData.inCart.includes(sProduct._id) === true ? (
+                    <div>
                     <div
                       style={{ background: "#303031" }}
                       className={`px-4 py-2 text-white text-center cursor-not-allowed uppercase opacity-75`}
                     >
                       In cart
                     </div>
+                    <div onClick={(e) => handleclick()
+                    }
+                    style={{ background: "#303031" }}
+                    className={`px-4 py-2 text-white text-center cursor-not-allowed uppercase opacity-75`}>
+                      Enquire through Whatsapp !!
+                  </div>
+                  </div>
                   ) : (
                     <div
                       style={{ background: "#303031" }}

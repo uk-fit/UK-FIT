@@ -195,6 +195,7 @@ const CartModal = () => {
                     }}
                   >
                     {/* Checkout Rs{data.cartTotalCost}.00 */}
+                    Enquire about it !!
                   </div>
                 )}
               </Fragment>

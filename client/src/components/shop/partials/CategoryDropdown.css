@@ -1,0 +1,51 @@
+.dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-button {
+  /* background-color: #f0f0f0; Light gray background */
+  padding: 12.5px 18px;
+  border-radius: 0.3rem; /* Rounded corners */
+  font-weight: 390; /* Light font weight */
+  letter-spacing: 0.1rem; /* Wide letter spacing */
+  box-sizing: border-box;
+  color: #718096;
+  cursor: pointer;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  padding-top: 1rem;
+  font: light;
+  /* font-size: large; */
+  transition: background-color 0.3s, color 0.3s; /* Smooth hover effect */
+}
+
+.dropdown-button:hover {
+  background-color: #e2e8f0; /* Slightly darker background on hover */
+  color: #2d3748; /* Darker text color on hover */
+}
+
+.dropdown-menu {
+  display: block;
+  position: absolute;
+  background-color: #ffffff; /* White background */
+  min-width: 200px; /* Increased minimum width */
+  box-shadow: 0px 10px 20px 0px rgba(0, 0, 0, 0.15); /* Softer drop shadow */
+  z-index: 1; /* Ensure dropdown appears above other elements */
+  border-radius: 0.5rem; /* More rounded corners */
+  padding: 0.75rem 0; /* Increased vertical padding */
+  margin-top: 0.75rem; /* More space above the dropdown */
+}
+
+.dropdown-item {
+  padding: 16px 24px; /* Increased padding inside each item */
+  color: #4a5568; /* Slightly darker text color */
+  text-decoration: none;
+  display: block;
+  transition: background-color 0.3s, color 0.3s; /* Smooth hover effect */
+}
+
+.dropdown-item:hover {
+  background-color: #e2e8f0; /* Light gray background on hover */
+  color: #1a202c; /* Even darker text color on hover */
+}

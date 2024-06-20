@@ -6,6 +6,14 @@ import { isWishReq, unWishReq, isWish } from "./Mixins";
 
 const apiURL = process.env.REACT_APP_API_URL;
 
+const shuffleArray = (array) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+};
+
 const SingleProduct = (props) => {
   const { data, dispatch } = useContext(HomeContext);
   const { products } = data;
@@ -27,7 +35,8 @@ const SingleProduct = (props) => {
       let responseData = await getAllProduct();
       setTimeout(() => {
         if (responseData && responseData.Products) {
-          dispatch({ type: "setProducts", payload: responseData.Products });
+          const shuffledProducts = shuffleArray(responseData.Products);
+          dispatch({ type: "setProducts", payload: shuffledProducts });
           dispatch({ type: "loading", payload: false });
         }
       }, 500);
@@ -56,6 +65,7 @@ const SingleProduct = (props) => {
       </div>
     );
   }
+
   return (
     <Fragment>
       {products && products.length > 0 ? (

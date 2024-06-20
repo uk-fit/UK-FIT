@@ -26,34 +26,34 @@ class Auth {
 
   /* User Registration/Signup controller  */
   async postSignup(req, res) {
-    let { name, email, password, cPassword } = req.body;
+    let { name, email, password, cPassword, businessName } = req.body;
+    console.log(businessName);
     let error = {};
     if (!name || !email || !password || !cPassword) {
       error = {
         ...error,
-        name: "Filed must not be empty",
-        email: "Filed must not be empty",
-        password: "Filed must not be empty",
-        cPassword: "Filed must not be empty",
+        name: "Field must not be empty",
+        email: "Field must not be empty",
+        password: "Field must not be empty",
+        cPassword: "Field must not be empty",
       };
       return res.json({ error });
     }
     if (name.length < 3 || name.length > 25) {
-      error = { ...error, name: "Name must be 3-25 charecter" };
+      error = { ...error, name: "Name must be 3-25 characters" };
       return res.json({ error });
     } else {
       if (validateEmail(email)) {
         name = toTitleCase(name);
-        if ((password.length > 255) | (password.length < 8)) {
+        if (password.length > 255 || password.length < 8) {
           error = {
             ...error,
-            password: "Password must be 8 charecter",
+            password: "Password must be 8 characters",
             name: "",
             email: "",
           };
           return res.json({ error });
         } else {
-          // If Email & Number exists in Database then:
           try {
             password = bcrypt.hashSync(password, 10);
             const data = await userModel.findOne({ email: email });
@@ -70,14 +70,14 @@ class Auth {
                 name,
                 email,
                 password,
-                // ========= Here role 1 for admin signup role 0 for customer signup =========
+                businessName, // Add businessName here
                 userRole: 0, // Field Name change to userRole from role
               });
               newUser
                 .save()
                 .then((data) => {
                   return res.json({
-                    success: "Account create successfully. Please login",
+                    success: "Account created successfully. Please login",
                   });
                 })
                 .catch((err) => {
@@ -99,6 +99,7 @@ class Auth {
       }
     }
   }
+  
 
   /* User Login/Signin controller  */
   async postSignin(req, res) {

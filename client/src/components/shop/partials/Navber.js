@@ -1,11 +1,14 @@
-import React, { Fragment, useContext } from "react";
+
+
+
+import React, { Fragment, useContext ,useEffect } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import "./style.css";
 import backgroundImage from './logo.png';
 import { logout } from "./Action";
 import { LayoutContext } from "../index";
 import { isAdmin } from "../auth/fetchApi";
-
+import CategoryDropdown from "./categorydropdown";
 const Navber = (props) => {
   const history = useHistory();
   const location = useLocation();
@@ -27,6 +30,12 @@ const Navber = (props) => {
       ? dispatch({ type: "cartModalToggle", payload: false })
       : dispatch({ type: "cartModalToggle", payload: true });
 
+      useEffect(() => {
+        if (!localStorage.getItem("jwt") && location.pathname === "/") {
+          loginModalOpen();
+        }
+      }, [location.pathname]);
+
   return (
     <Fragment>
       {/* Navber Section */}
@@ -41,12 +50,9 @@ const Navber = (props) => {
               className="logo cursor-pointer"
               onClick={(e) => history.push("/")} 
             />
-            <span
-              className="hover:bg-gray-200 px-4 py-3 rounded-lg font-light tracking-widest hover:text-gray-800 cursor-pointer"
-              onClick={(e) => history.push("/")}
-            >
-              Shop
-            </span>
+            <Fragment>
+               <CategoryDropdown  />
+             </Fragment>
 
             
 
@@ -98,6 +104,17 @@ const Navber = (props) => {
             UK FIT
           </div>
           <div className="flex items-right col-span-2 lg:col-span-1 flex justify-end">
+          <div className="flex items-right col-span-2 lg:col-span-1 flex justify-end">
+          <div className="phone-number">
+            <i className="fas fa-phone-alt"></i>
+           
+            <img src="https://www.pngfind.com/pngs/m/150-1504296_png-file-svg-call-icon-png-transparent-png.png" alt="Phone" className="phone-image" />
+            <br></br>
+            <span>
+            <a href="tel:9535698667">Call Now</a>
+             </span>
+          </div>
+        </div>
             {/*  WishList Page Button */}
             <div
               onClick={(e) => history.push("/wish-list")}

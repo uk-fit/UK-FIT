@@ -1,4 +1,9 @@
 import React from "react";
+import img1 from "./arch_bad.jpg";
+import img2 from "./brothers.jpg";
+import img3 from "./checkmate.jpg";
+import img4 from "./leanwolves.jpg";
+import img5 from "./trans.jpg";
 
 const TestimonialCarousel = () => {
   const styles = {
@@ -55,6 +60,7 @@ const TestimonialCarousel = () => {
     },
     testimonial: {
       padding: "30px 0 10px",
+      fontWeight:390 
     },
     overview: {
       textAlign: "center",
@@ -144,41 +150,15 @@ const TestimonialCarousel = () => {
           <div className="carousel-item active" style={styles.carouselItem}>
             <div className="img-box" style={styles.imgBox}>
               <img
-                src="https://png.pngtree.com/png-vector/20190710/ourlarge/pngtree-user-vector-avatar-png-image_1541962.jpg"
+                src={img2}
                 alt=""
                 style={styles.imgBoxImg}
               />
             </div>
             <p className="testimonial" style={styles.testimonial}>
-            <i>We partnered with UK FIT to create custom T-shirts and shorts for our PU college sports teams. 
-            The design process was collaborative, resulting in high-quality, affordable apparel that looks great and 
-            performs well on the field. The breathable material keeps our athletes cool and comfortable, boosting team spirit and pride.</i>
-            </p>
-            <p className="overview" style={styles.overview}>
-              <b style={styles.overviewB}>Transcend Ground of Institution</b>
-            </p>
-            {/* <div className="star-rating" style={styles.starRating}>
-              <ul className="list-inline">
-                <li className="list-inline-item"><i className="fa fa-star"></i></li>
-                <li className="list-inline-item"><i className="fa fa-star"></i></li>
-                <li className="list-inline-item"><i className="fa fa-star"></i></li>
-                <li className="list-inline-item"><i className="fa fa-star"></i></li>
-                <li className="list-inline-item"><i className="fa fa-star-o"></i></li>
-              </ul>
-            </div> */}
-          </div>
-          <div className="carousel-item" style={styles.carouselItem}>
-            <div className="img-box" style={styles.imgBox}>
-              <img
-                src="https://png.pngtree.com/png-vector/20190710/ourlarge/pngtree-user-vector-avatar-png-image_1541962.jpg"
-                alt=""
-                style={styles.imgBoxImg}
-              />
-            </div>
-            <p className="testimonial" style={styles.testimonial}>
-            <i>We recently purchased UK FIT shorts and T-shirts for our badminton academy, and we're very happy with the purchase. 
+            We recently purchased UK FIT shorts and T-shirts for our badminton academy, and we're very happy with the purchase. 
             The Shorts and T-shirts are well-made and comfortable, and they look great on the court. We would definitely 
-            recommend UK FIT to other sports academies.</i>
+            recommend UK FIT to other sports academies.
             </p>
             <p className="overview" style={styles.overview}>
               <b style={styles.overviewB}>Brothers Badminton Academy</b>
@@ -196,15 +176,42 @@ const TestimonialCarousel = () => {
           <div className="carousel-item" style={styles.carouselItem}>
             <div className="img-box" style={styles.imgBox}>
               <img
-                src="https://png.pngtree.com/png-vector/20190710/ourlarge/pngtree-user-vector-avatar-png-image_1541962.jpg"
+                src={img5}
                 alt=""
                 style={styles.imgBoxImg}
               />
             </div>
             <p className="testimonial" style={styles.testimonial}>
-            <i>As a badminton academy, it's important for our students to have a kit that allow for freedom of movement. 
+            We partnered with UK FIT to create custom T-shirts and shorts for our PU college sports teams. 
+            The design process was collaborative, resulting in high-quality, affordable apparel that looks great and 
+            performs well on the field. The breathable material keeps our athletes cool and comfortable, boosting team spirit and pride.
+            
+            </p>
+            <p className="overview" style={styles.overview}>
+              <b style={styles.overviewB}>Transcend Ground of Institution</b>
+            </p>
+            {/* <div className="star-rating" style={styles.starRating}>
+              <ul className="list-inline">
+                <li className="list-inline-item"><i className="fa fa-star"></i></li>
+                <li className="list-inline-item"><i className="fa fa-star"></i></li>
+                <li className="list-inline-item"><i className="fa fa-star"></i></li>
+                <li className="list-inline-item"><i className="fa fa-star"></i></li>
+                <li className="list-inline-item"><i className="fa fa-star-o"></i></li>
+              </ul>
+            </div> */}
+          </div>
+          <div className="carousel-item" style={styles.carouselItem}>
+            <div className="img-box" style={styles.imgBox}>
+              <img
+                src={img1}
+                alt=""
+                style={styles.imgBoxImg}
+              />
+            </div>
+            <p className="testimonial" style={styles.testimonial}>
+            As a badminton academy, it's important for our students to have a kit that allow for freedom of movement. 
             UK FIT shorts and T-shirts are exactly what we need. They're lightweight and breathable, and they don't restrict 
-            movement in any way. Our students love them</i>
+            movement in any way. Our students love them.
             </p>
             <p className="overview" style={styles.overview}>
               <b style={styles.overviewB}>Arch Badminton Academy</b> 
@@ -222,15 +229,15 @@ const TestimonialCarousel = () => {
           <div className="carousel-item" style={styles.carouselItem}>
             <div className="img-box" style={styles.imgBox}>
               <img
-                src="https://png.pngtree.com/png-vector/20190710/ourlarge/pngtree-user-vector-avatar-png-image_1541962.jpg"
+                src={img3}
                 alt=""
                 style={styles.imgBoxImg}
               />
             </div>
             <p className="testimonial" style={styles.testimonial}>
-            <i> Happy to Collaborate and release our Checkmate Summer camp outfit By UK FIT - We are impressed, 
+             Happy to Collaborate and release our Checkmate Summer camp outfit By UK FIT - We are impressed, 
             the tracksuits are well made ,they also look great + foldable feature of Tracksuit is splendid.
-            Thank you UK FIT</i>
+            Thank you UK FIT.
             </p>
             <p className="overview" style={styles.overview}>
               <b style={styles.overviewB}>Check mate table tennis Academy</b> 
@@ -248,7 +255,7 @@ const TestimonialCarousel = () => {
           <div className="carousel-item" style={styles.carouselItem}>
             <div className="img-box" style={styles.imgBox}>
               <img
-                src="https://png.pngtree.com/png-vector/20190710/ourlarge/pngtree-user-vector-avatar-png-image_1541962.jpg"
+                src={img4}
                 alt=""
                 style={styles.imgBoxImg}
               />

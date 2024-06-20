@@ -7,6 +7,7 @@ const Signup = (props) => {
     email: "",
     password: "",
     cPassword: "",
+    businessName: "", // Add businessName state
     error: false,
     loading: false,
     success: false,
@@ -28,12 +29,19 @@ const Signup = (props) => {
       });
     }
     try {
+      // console.log("printin the busiinesname");
+      // console.log("printin the busiinesname");
+      // console.log("printin the busiinesname");
+      // console.log("printin the busiinesname");
+      // console.log(data.businessName);
       let responseData = await signupReq({
         name: data.name,
         email: data.email,
         password: data.password,
         cPassword: data.cPassword,
+        businessName: data.businessName, // Include businessName in the request
       });
+
       if (responseData.error) {
         setData({
           ...data,
@@ -49,6 +57,7 @@ const Signup = (props) => {
           email: "",
           password: "",
           cPassword: "",
+          businessName: "", // Reset businessName
           loading: false,
           error: false,
         });
@@ -84,6 +93,29 @@ const Signup = (props) => {
             } px-4 py-2 focus:outline-none border`}
           />
           {!data.error ? "" : alert(data.error.name, "red")}
+        </div>
+        {/* Add input field for Business Name */}
+        <div className="flex flex-col">
+          <label htmlFor="businessName">
+            Business Name<span className="text-sm text-gray-600 ml-1">*</span>
+          </label>
+          <input
+            onChange={(e) =>
+              setData({
+                ...data,
+                success: false,
+                error: {},
+                businessName: e.target.value,
+              })
+            }
+            value={data.businessName}
+            type="text"
+            id="businessName"
+            className={`${
+              data.error.businessName ? "border-red-500" : ""
+            } px-4 py-2 focus:outline-none border`}
+          />
+          {!data.error ? "" : alert(data.error.businessName, "red")}
         </div>
         <div className="flex flex-col">
           <label htmlFor="email">
@@ -169,10 +201,9 @@ const Signup = (props) => {
         </div>
         <div
           onClick={(e) => formSubmit()}
-          style={{ background: "#303031" }}
-          className="px-4 py-2 text-white text-center cursor-pointer font-medium"
+          className="px-4 py-2 text-white text-center cursor-pointer font-medium bg-gray-800"
         >
-          Create an account
+          Register With UK FIT !!
         </div>
       </form>
     </Fragment>
