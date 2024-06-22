@@ -58,7 +58,8 @@ const CategoryDropdown = () => {
   };
 
   const handleClick = (categoryId) => {
-    window.location.replace(`/products/category/${categoryId}`);
+    // window.location.replace(`/products/category/${categoryId}`);
+    history.push(`/products/category/${categoryId}`);
     setDropdownVisible(false); // Close the dropdown after selecting a category
   };
 

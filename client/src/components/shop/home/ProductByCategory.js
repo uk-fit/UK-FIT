@@ -127,7 +127,7 @@ const PageComponent = () => {
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [catId]);
 
   const fetchData = async () => {
     try {
