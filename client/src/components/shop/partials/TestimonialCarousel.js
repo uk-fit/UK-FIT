@@ -60,15 +60,25 @@ const TestimonialCarousel = () => {
     },
     testimonial: {
       padding: "30px 0 10px",
-      fontWeight:390 
+      fontWeight: 400,
+      fontSize: "1.2em", // Adjust font size
+      lineHeight: "1.6", // Adjust line height for better readability
+      fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", // Font family
+      color: "#333", // Text color
+      textAlign: "center", // Center the text
+      backgroundColor: "#f9f9f9", // Light background color for contrast
+      borderRadius: "5px", // Rounded corners
+      boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)", // Subtle shadow for depth
+      margin: "20px 0", // Margin to separate from other content
     },
+    
     overview: {
       textAlign: "center",
       paddingBottom: "5px",
     },
     overviewB: {
       color: "#000",
-      fontSize: "15px",
+      fontSize: "20px",
       textTransform: "uppercase",
       display: "block",
       paddingBottom: "5px",

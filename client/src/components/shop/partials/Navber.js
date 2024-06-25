@@ -41,7 +41,6 @@ const Navber = (props) => {
       {/* Navber Section */}
       <nav className="fixed top-0 w-full z-20 shadow-lg lg:shadow-none bg-white">
         <div className="m-4 md:mx-12 md:my-6 grid grid-cols-4 lg:grid-cols-3">
-        
           <div className="hidden lg:block col-span-1 flex text-gray-600 mt-1">
             <div className="flex items-center">
           <img 
@@ -72,7 +71,7 @@ const Navber = (props) => {
             </span>
             </div>
           </div>
-          <div className="col-span-2 lg:hidden flex justify-items-stretch	 items-center">
+          <div className="col-span-2 lg:hidden flex justify-items-stretch items-center">
             <svg
               onClick={(e) => navberToggleOpen()}
               className="col-span-1 lg:hidden w-8 h-8 cursor-pointer text-gray-600"
@@ -399,20 +398,28 @@ const Navber = (props) => {
         >
           <div className="col-span-1 flex flex-col text-gray-600">
             <span>
-            <img src="src\components\shop\partials\UK FIT LOGO black.png" alt="Logo" className="h-8 w-8 mr-2" />
+            <img src={backgroundImage} alt="Logo" className="h-8 w-8 mr-2" />
 
             </span>
+            <Fragment>
+               <CategoryDropdown  />
+             </Fragment>
+
+            
+
             <span
-              className="font-medium text-lg tracking-widest hover:text-gray-800 hover:bg-gray-200 px-3 py-2 rounded-lg cursor-pointer"
-              onClick={(e) => history.push("/")}
+              className="hover:bg-gray-200 px-4 py-3 rounded-lg font-light tracking-widest hover:text-gray-800 cursor-pointer"
+              onClick={() => window.open("https://docs.google.com/forms/d/e/1FAIpQLSfFARzEHg_Bt22r2TMirpA9TxsA8P3MoSRmqwPV94vVNnGiQQ/viewform?usp=sf_link", "_blank")}
             >
-              Shop
+              Enquire
+
             </span>
+            
             <span
-              className="font-medium text-lg tracking-widest hover:text-gray-800 hover:bg-gray-200 px-3 py-2 rounded-lg cursor-pointer"
+              className="hover:bg-gray-200 px-4 py-3 rounded-lg font-light tracking-widest hover:text-gray-800 cursor-pointer"
               onClick={(e) => history.push("/AboutUs")}
             >
-              About Us
+              About us
             </span>
           </div>
         </div>
