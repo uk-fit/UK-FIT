@@ -125,6 +125,7 @@ const AllProduct = (props) => {
 
 /* Single Product Component */
 const ProductTable = ({ product, deleteProduct, editProduct }) => {
+  console.log(product.pCategory)
   return (
     <Fragment>
       <tr>
