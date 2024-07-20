@@ -110,7 +110,7 @@ const Navber = (props) => {
             <img src="https://www.pngfind.com/pngs/m/150-1504296_png-file-svg-call-icon-png-transparent-png.png" alt="Phone" className="phone-image" />
             <br></br>
             <span>
-            <a href="tel:9535698667">Call Now</a>
+            <a href="tel:6268286700">Call Now</a>
              </span>
           </div>
         </div>

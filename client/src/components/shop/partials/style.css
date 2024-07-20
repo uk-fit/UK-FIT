@@ -28,6 +28,7 @@
   padding-bottom: 25px;
   padding-right: 10px;
   font-weight: 390;
+  flex-wrap: nowrap; /* Ensure content doesn't wrap */
 }
 
 .phone-number i {
@@ -81,6 +82,12 @@
     height: 20px; /* Smaller image size for mobile */
   }
 }
+
+/* Ensure elements stay in one line */
+.phone-number {
+  white-space: nowrap;
+}
+
 
 /* style.css */
 
