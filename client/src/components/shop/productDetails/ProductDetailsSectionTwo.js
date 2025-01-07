@@ -67,17 +67,19 @@ const ProductDetailsSectionTwo = (props) => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
+console.log("logging from now")
+console.log(singleProduct.pDescription)
   return (
     <Fragment>
-      <section className="m-4 md:mx-12 md:my-8">
+      {/* <section className="m-4 md:mx-12 md:my-8">
         <Menu />
         {data.menu ? (
+          
           <div className="mt-6">{singleProduct.pDescription}</div>
         ) : (
           <RatingReview />
         )}
-      </section>
+      </section> */}
       <div className="m-4 md:mx-8 md:my-6 flex justify-center capitalize font-light tracking-widest bg-white border-t border-b text-gray-800 px-4 py-4 space-x-4">
         <div>
           <span>Category :</span>
