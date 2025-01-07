@@ -94,9 +94,24 @@ const ProductDetailsSection = (props) => {
   } else if (!sProduct) {
     return <div>No product</div>;
   }
+  // const handleclick = () => {
+  //   const url = 'https://api.whatsapp.com/send?phone=919535698667';
+  //   window.open(url, '_blank');
+  // };
   const handleclick = () => {
-    const url = 'https://api.whatsapp.com/send?phone=919535698667';
-    window.open(url, '_blank');
+    // WhatsApp number to send the message to
+    const phoneNumber = "6268286700"; // Replace with your WhatsApp number
+    const firstImageUrl = sProduct.pImages[0]?.url;
+    console.log("loggin for images");
+    console.log(firstImageUrl);
+    // Create the WhatsApp message with product details
+    const message = `Hello,\n\nI am interested in the following product:\n\n*${sProduct.pName}*\n${sProduct.pDescription}\n\n : ${firstImageUrl}`;
+
+    // Generate the WhatsApp URL
+    const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+
+    // Open the WhatsApp link in a new tab
+    window.open(whatsappURL, "_blank");
   };
 
   return (
