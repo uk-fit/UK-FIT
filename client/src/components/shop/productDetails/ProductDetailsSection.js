@@ -236,8 +236,11 @@ const ProductDetailsSection = (props) => {
               </div>
             </div>
             <div className="my-4 md:my-6 text-gray-600">
-              {sProduct.pDescription}
-            </div>
+  {sProduct.pDescription.split('\n').map((line, index) => (
+    line.trim() && <p key={index}>{line}</p> // Render non-empty lines
+  ))}
+</div>
+
             <div className="my-4 md:my-6">
               {+quantitiy === +sProduct.pQuantity ? (
                 <span className="text-xs text-red-500">Stock limited</span>
